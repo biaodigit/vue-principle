@@ -58,7 +58,7 @@ Dep.prototype = {
         this.subs.push(sub)
     },
     depend: function () {
-      Dep.target.addDep()
+      Dep.target.addDep(this)
     },
     removeSub: function(sub) {
         var index = this.subs.indexOf(sub);
