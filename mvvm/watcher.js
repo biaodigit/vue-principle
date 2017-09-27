@@ -21,7 +21,8 @@ Watcher.prototype = {
         var oldVal = this.value
         if (value !== oldVal) {
             this.value = value
-            this.cb.call(this.vm, value, oldVal)
+            this.cb.call(this.vm, value)
+            console.log(this.cb)
         }
     },
     addDep: function (dep) {

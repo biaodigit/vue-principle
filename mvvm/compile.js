@@ -1,7 +1,6 @@
 function Compile(el, vm) {
     this.$vm = vm
     this.$el = this.isElementNode(el) ? el : document.querySelector(el)
-
     if (this.$el) {
         this.$fragment = this.node2Fragment(this.$el);
         this.init();
@@ -16,8 +15,10 @@ Compile.prototype = {
 
         // 将原生节点拷贝到fragment
         while (child = el.firstChild) {
+            console.log(el.firstChild)
             fragment.appendChild(child);
         }
+        console.log(fragment)
 
         return fragment
     },
@@ -114,7 +115,7 @@ var compileUtil = {
     // },
     bind: function (node, vm, exp, dir) {
         var updaterFn = updater[dir + 'Updater'];
-
+        var self = this;
         updaterFn && updaterFn(node, this._getVMVal(vm, exp));
 
         new Watcher(vm, exp, function (value) {
@@ -154,12 +155,12 @@ var compileUtil = {
 
 var updater = {
     textUpdater: function (node, value) {
-        node.textContent = typeof value == 'undefined' ? '' : value
+        node.textContent = typeof value === 'undefined' ? '' : value
     },
     htmlUpdater: function (node, value) {
-        node.innerHTML = typeof value == 'undefined' ? '' : value
+        node.innerHTML = typeof value === 'undefined' ? '' : value
     },
     modelUpdater: function (node, value) {
-        node.value = typeof value == 'undefined' ? '' : value
+        node.value = typeof value === 'undefined' ? '' : value
     }
 }

@@ -18,7 +18,7 @@ Observer.prototype = {
         var childObj = observer(val);
 
         Object.defineProperty(data, key, {
-            enuselfrable: true,
+            enumerable: true,
             configurable: false,
             get: function () {
                 if (Dep.target) {
@@ -30,6 +30,7 @@ Observer.prototype = {
                 if (val === newVal) {
                     return
                 }
+
                 val = newVal
                 // 新的值是object的话，进行监听
                 childObj = observer(newVal);
