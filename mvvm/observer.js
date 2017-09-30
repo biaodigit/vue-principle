@@ -1,33 +1,40 @@
-function Observer(data) {
-    this.data = data
-    this.walk(data)
+let observer = (data) => {
+    if(!data || typeof data !== 'object'){
+        return
+    }
+
+    return new Observer(data)
 }
 
-Observer.prototype = {
-    walk: function (data) {
-        var self = this
-        Object.keys(data).forEach(function (key) {
-            self.convert(key, data[key])
-        })
-    },
-    convert: function (key, val) {
-        this.defineReactive(this.data, key, val)
-    },
-    defineReactive: function (data, key, val) {
-        var dep = new Dep();
-        var childObj = observer(val);
+class Observer {
+    constructor(data) {
+        this.data = data
+        this.convert(data)
+    }
 
-        Object.defineProperty(data, key, {
+
+    convert(data) {
+        Object.keys(data).forEach((key) => {
+            this.defineReactive(data, key, data[key])
+        })
+    }
+
+    defineReactive(data, key, val) {
+        let dep = new Dep(),
+            childObj = observer(val)
+
+        Object.defineProperty(data,key,{
             enumerable: true,
             configurable: false,
             get: function () {
-                if (Dep.target) {
+                if(Dep.target){
                     dep.depend()
                 }
-                return val;
+
+                return val
             },
             set: function (newVal) {
-                if (val === newVal) {
+                if(val === newVal){
                     return
                 }
 
@@ -39,35 +46,29 @@ Observer.prototype = {
             }
         })
     }
-};
-
-function observer(data) {
-    if (!data || typeof data !== 'object') {
-        return
-    }
-
-    return new Observer(data)
-};
-
-var uid = 0
-
-function Dep() {
-    this.id = uid++
-    this.subs = []
 }
 
-Dep.prototype = {
-    addSub: function (sub) {
-        this.subs.push(sub)
-    },
-    depend: function () {
-        Dep.target.addDep(this)
-    },
-    notify: function () {
-        this.subs.forEach(function (sub) {
-            sub.update();
-        });
-    }
-};
+let uid = 0
 
-Dep.target = null;
+class Dep {
+    constructor() {
+        this.id = uid++
+        this.subs = []
+    }
+
+    addSub(sub) {
+        this.subs.push(sub)
+    }
+
+    depend() {
+        Dep.target.addDep(this)
+    }
+
+    notify() {
+        this.subs.forEach((sub) => {
+            sub.update()
+        })
+    }
+}
+
+Dep.target = null
