@@ -1,43 +1,45 @@
-function Watcher(vm, expOrFn, cb) {
-    this.cb = cb;
-    this.vm = vm;
-    this.expOrFn = expOrFn;
-    this.depIds = {};
+class Watcher {
+    constructor(vm, expOrFn, cb) {
+        this.vm = vm
+        this.cb = cb
+        this.depIds = {}
+        if (typeof expOrFn === 'function') {
+            this.getter = expOrFn
+        } else {
+            this.getter = this.parseGetter(expOrFn)
+        }
 
-    if (typeof expOrFn === 'function') {
-        this.getter = expOrFn;
-    } else {
-        this.getter = this.parseGetter(expOrFn);
+        this.value = this.get()
     }
-    this.value = this.get();
-}
 
-Watcher.prototype = {
-    update: function () {
-        this.run()
-    },
-    run: function () {
-        var value = this.get()
-        var oldVal = this.value
-        if (value !== oldVal) {
-            this.value = value
-            this.cb.call(this.vm, value)
-            console.log(this.cb)
-        }
-    },
-    addDep: function (dep) {
-        if (!this.depIds.hasOwnProperty(dep.id)) {
-            dep.addSub(this);
-            this.depIds[dep.id] = dep;
-        }
-    },
-    get: function () {
+    get() {
+        // 将当前订阅者指向自己
         Dep.target = this
-        var value = this.getter.call(this.vm, this.vm)
+        //获取当前值
+        let value = this.getter.call(this.vm, this.vm)
+        //释放内存
         Dep.target = null
         return value
-    },
-    parseGetter: function (exp) {
+    }
+
+    addDep(dep) {
+        //如果在订阅者数组中没有当前订阅者Id,执行addSub
+        if (!this.depIds.hasOwnProperty(dep.id)) {
+            dep.addSub(this)
+            this.depIds[dep.id] = dep
+        }
+    }
+
+    update() {
+        let value = this.get()
+        let oldValue = this.value
+        if (value !== oldValue) {
+            this.value = value
+            this.cb.call(this.vm, value)
+        }
+    }
+
+    parseGetter(exp) {
         if (/[^\w.$]/.test(exp)) return;
 
         var exps = exp.split('.');
