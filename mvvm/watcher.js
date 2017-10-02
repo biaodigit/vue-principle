@@ -31,10 +31,12 @@ class Watcher {
     }
 
     update() {
+        //获取最新值
         let value = this.get()
         let oldValue = this.value
         if (value !== oldValue) {
             this.value = value
+            //调用compile类更新函数更新模版
             this.cb.call(this.vm, value)
         }
     }
