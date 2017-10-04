@@ -8,7 +8,6 @@
 <div id="mvvm-app">
     <input type="text" v-model="someStr">
     <input type="text" v-model="child.someStr">
-    <input type="text" v-model="vmStr">
     <p>{{getHelloWord}}</p>
     <p v-html="htmlStr"></p>
     <button v-on:click="clickBtn">change model</button>
@@ -27,12 +26,11 @@
             child: {
                 someStr: 'Vue.js! '
             },
-            vmStr: 'hahaha'
         },
 
         computed: {
             getHelloWord: function() {
-                return this.someStr + this.child.someStr + this.vmStr;
+                return this.someStr + this.child.someStr
             }
         },
 

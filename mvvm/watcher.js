@@ -15,6 +15,7 @@ class Watcher {
     get() {
         // 将当前订阅者指向自己
         Dep.target = this
+        console.log(Dep.target)
         //获取当前值
         let value = this.getter.call(this.vm, this.vm)
         //释放内存
@@ -44,12 +45,12 @@ class Watcher {
     parseGetter(exp) {
         if (/[^\w.$]/.test(exp)) return;
 
-        var exps = exp.split('.');
+        let exps = exp.split('.');
 
         return function (obj) {
-            for (var i = 0, len = exps.length; i < len; i++) {
+            for (let i = 0, len = exps.length; i < len; i++) {
                 if (!obj) return;
-                obj = obj[exps[i]];
+                obj = obj[exps[i]]
             }
             return obj;
         }

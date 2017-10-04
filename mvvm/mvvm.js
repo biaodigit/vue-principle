@@ -1,40 +1,43 @@
-function MVVM(options) {
-    this.$options = options || {}
-    var data = this._data = this.$options.data,
-        self = this
-    // 数据代理，实现 vm.xxx -> vm._data.xxx
-    Object.keys(data).forEach(function (key) {
-        self._proxy(key)
-    })
-    this._initComputed()
-    observer(data)
-    this.$compile = new Compile(options.el || document.body,this)
-}
+class MVVM {
+    constructor(options) {
+        this.$options = options
+        let data = this._data = this.$options.data,
+            self = this
+        Object.keys(data).forEach(function (key) {
+            self._proxy(key)
+        })
+        this._initComputed()
+        observer(data)
+        new Compile(options.el || document.body, this)
+    }
 
-MVVM.prototype = {
-    $watch: function (key,cb,options) {
+    $watch(key, cb) {
         new Watcher(this,key,cb)
-    },
-    _proxy: function (key) {
-        var self = this
-        Object.defineProperty(self,key,{
-            enumerable:true,
+    }
+
+    _proxy(key) {
+        let self = this
+        Object.defineProperty(self, key, {
+            enumerable: true,
             configurable: false,
-            get: function () {
+            get: () => {
                 return self._data[key]
             },
-            set: function (newVal) {
+            set: (newVal) => {
                 return self._data[key] = newVal
             }
         })
-    },
-    _initComputed: function () {
-        var self = this
-        var computed = this.$options.computed
+    }
+
+    _initComputed() {
+        let self = this,
+            computed = this.$options.computed
         if(typeof computed === 'object'){
-            Object.keys(computed).forEach(function (key) {
+            Object.keys(computed).forEach(function(key){
                 Object.defineProperty(self,key,{
-                    get: typeof computed[key] === 'function' ? computed[key] : computed[key].get
+                    get: () => {
+                        return typeof computed[key] === 'function' ? computed[key] : computed[key].get
+                    }
                 })
             })
         }
