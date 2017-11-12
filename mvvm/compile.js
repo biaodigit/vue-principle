@@ -129,6 +129,7 @@ let compileUtil = {
         let val = vm
         exp = exp.split('.')
         exp.forEach(function (key) {
+            console.log(val)
             val = val[key]
         });
 

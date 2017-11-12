@@ -15,7 +15,6 @@ class Watcher {
     get() {
         // 将当前订阅者指向自己
         Dep.target = this
-        console.log(Dep.target)
         //获取当前值
         let value = this.getter.call(this.vm, this.vm)
         //释放内存
