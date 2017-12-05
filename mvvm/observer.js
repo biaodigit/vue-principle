@@ -1,8 +1,7 @@
 let observer = (data) => {
-    if(!data || typeof data !== 'object'){
+    if (!data || data.constructor !== Object) {
         return
     }
-
     return new Observer(data)
 }
 
@@ -23,18 +22,18 @@ class Observer {
         let dep = new Dep(),
             childObj = observer(val)
 
-        Object.defineProperty(data,key,{
+        Object.defineProperty(data, key, {
             enumerable: true,
             configurable: false,
             get: function () {
-                if(Dep.target){
+                if (Dep.target) {
                     dep.depend()
                 }
 
                 return val
             },
             set: function (newVal) {
-                if(val === newVal){
+                if (val === newVal) {
                     return
                 }
 
