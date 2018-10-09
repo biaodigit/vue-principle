@@ -1,60 +1,53 @@
-function Observer(data) {
-    this.data = data
-    this.walk(data)
+function observer(data) {
+    if (!data || typeof data !== 'object') return;
+
+    new Observer(data)
 }
 
-Observer.prototype = {
-    walk: function (data) {
-        var self = this
-        Object.keys(data).forEach(function (key) {
-            self.defineReactive(data, key, data[key])
+class Observer {
+    constructor(data) {
+        this.data = data;
+        Object.keys(data).forEach((key) => {
+            this.defineReactive(this.data, key, this.data[key])
         })
-    },
-    defineReactive: function (data, key, val) {
-        var dep = new Dep()
-        var child = observe(data[key])
+    }
+
+    defineReactive(data, key, val) {
+        let dep = new Dep(),
+            child = observer(data[key]);
+
         Object.defineProperty(data, key, {
             enumerable: true,
-            configurable: false,
-            get: function () {
+            configurable: true,
+            get: () => {
                 if (Dep.target) {
                     dep.addSub(Dep.target)
                 }
                 return val
             },
-            set: function (newVal) {
-                if(val === newVal){
-                    return
-                }
-                val = newVal
-                dep.notify()
-                child = observe(newVal)
+            set: (newVal) => {
+                if (newVal === val) return;
+
+                val = newVal;
+                dep.notify();
+                child = observer(val)
             }
         })
     }
 }
 
-function observe(obj) {
-    if (!obj || typeof obj !== 'object') {
-        return
+class Dep {
+    constructor() {
+        this.subs = []
     }
 
-    return new Observer(obj)
-}
-
-function Dep() {
-    this.subs = []
-}
-
-Dep.prototype = {
-    addSub: function (sub) {
+    addSub(sub) {
         this.subs.push(sub)
-    },
-    notify: function () {
-        this.subs.forEach(function (sub) {
+    }
+
+    notify() {
+        this.subs.forEach((sub) => {
             sub.update()
         })
     }
-};
-
-Dep.target = null;
+}

@@ -1,34 +1,37 @@
-function Watcher(vm, exp, cb) {
-    this.vm = vm
-    this.cb = cb
-    this.exp = exp
-    this.getter = this.parseGetter(exp)
-    this.value = this.get()
-}
+class Watcher {
+    constructor(vm, exp, cb) {
+        this.vm = vm;
+        this.cb = cb;
+        this.getter = this.parseGetter(exp);
+        this.value = this.get();
+    }
 
-Watcher.prototype = {
-    update: function () {
+    update() {
         this.run()
-    },
-    run: function () {
-        var value = this.get()
-        var oldValue = this.value
-        if(oldValue !== value){
-            this.cb.call(this.vm,value)
-            this.value = value
+    }
+
+    run() {
+        let newVal = this.get(),
+            oldVal = this.value;
+        if (newVal !== oldVal) {
+            this.cb.call(this.vm, newVal)
+            this.value = newVal
         }
-    },
-    get: function () {
-        Dep.target = this
-        var value = this.getter.call(this.vm, this.vm)
-        Dep.target = null
+    }
+
+    get() {
+        Dep.target = this;
+        let value = this.getter.call(this.vm, this.vm);
+        Dep.target = null;
         return value
-    },
-    parseGetter: function (exp) {
-        var exps = exp.split('.')
+    }
+
+    parseGetter(exp) {
+        const exps = exp.split('.')
         return function (obj) {
-            for (var i = 0; i < exps.length; i++) {
+            for (let i = 0; i < exps.length; i++) {
                 if (!obj) return
+
                 obj = obj[exps[i]]
             }
             return obj
