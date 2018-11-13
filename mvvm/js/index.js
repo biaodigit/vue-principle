@@ -8,7 +8,6 @@ class Vue {
             this._proxy(key)
         });
 
-        this.initComputed();
         observer(this.data);
         new Compile(options.el, this);
         options.mounted.call(this)
@@ -21,18 +20,5 @@ class Vue {
             get: () => this.data[key],
             set: (val) => this.data[key] = val
         })
-    }
-
-    initComputed() {
-        let computed = this.computed;
-        if (typeof computed === 'object') {
-            Object.keys(computed).forEach((key) => {
-                Object.defineProperty(this, key, {
-                    get: typeof computed[key] === 'function'
-                        ? computed[key]
-                        : computed[key].get
-                })
-            })
-        }
     }
 }

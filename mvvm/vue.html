@@ -7,8 +7,7 @@
 <body>
 <div id="mvvm-app">
     <input type="text" v-model="someStr">
-    <input type="text" v-model="child.someStr">
-    <p>{{getHelloWord}}</p>
+    <p>{{someStr}}</p>
     <p v-html="htmlStr"></p>
     <button v-on:click="clickBtn">change model</button>
 </div>
@@ -20,33 +19,20 @@
    new Vue({
         el: '#mvvm-app',
         data: {
-            someStr: 'hello ',
+            someStr: 'hello Vue.js!',
             className: 'btn',
-            htmlStr: '<span style="color: #f00;">red</span>',
-            child: {
-                someStr: 'Vue.js! '
-            },
-        },
-        computed: {
-            getHelloWord: function() {
-                return this.someStr + this.child.someStr
-            }
+            htmlStr: '<span style="color: #f00;">red</span>'
         },
         methods: {
             clickBtn: function(e) {
                 var randomStrArr = ['childOne', 'childTwo', 'childThree'];
-                this.child.someStr = randomStrArr[parseInt(Math.random() * 3)];
-                console.log(this.child.someStr)
+                this.someStr = randomStrArr[parseInt(Math.random() * 3)];
             }
         },
         mounted: function () {
-            alert('mounted')
+            console.log('mounted')
         }
     });
-
-//    vm.$watch('child.someStr', function() {
-////        console.log(arguments);
-//    });
 </script>
 </body>
 </html>
